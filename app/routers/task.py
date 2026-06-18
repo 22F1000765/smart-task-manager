@@ -5,23 +5,42 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.task import Task
+from sqlalchemy import desc
 
 router = APIRouter(tags=["Tasks"])
 
-@router.get(
-    "/tasks",
-    response_model=list[TaskResponse]
-)
+
+@router.get("/", response_model=list[TaskResponse])
 def get_tasks(
+    status: str | None = None,
+    search: str | None = None,
+    sort: str | None = None,
     db: Session = Depends(get_db)
 ):
+    query = db.query(Task)
 
-    tasks = db.query(Task).all()
+    if status:
+        query = query.filter(Task.status == status)
 
-    return tasks
+    if search:
+        query = query.filter(
+            Task.title.ilike(f"%{search}%")
+        )
+
+    if sort == "newest":
+        query = query.order_by(
+            desc(Task.created_at)
+        )
+
+    elif sort == "oldest":
+        query = query.order_by(
+            Task.created_at
+        )
+
+    return query.all()
 
 @router.get(
-    "/tasks/{task_id}",
+    "/{task_id}",
     response_model=TaskResponse
 )
 def get_task(
@@ -43,7 +62,7 @@ def get_task(
 
 
 @router.post(
-    "/tasks",
+    "/",
     response_model=TaskResponse
 )
 def create_task(
@@ -65,7 +84,7 @@ def create_task(
     return new_task
 
 @router.put(
-    "/tasks/{task_id}",
+    "/{task_id}",
     response_model=TaskResponse
 )
 def update_task(
@@ -94,7 +113,7 @@ def update_task(
 
     return task
 
-@router.delete("/tasks/{task_id}")
+@router.delete("/{task_id}")
 def delete_task(
     task_id: int,
     db: Session = Depends(get_db)

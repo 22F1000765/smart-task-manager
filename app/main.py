@@ -12,7 +12,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
-app.include_router(task_router)
+app.include_router(task_router,
+                   prefix="/tasks",
+                   tags=["Tasks"]
+                   )
 
 
 @app.get("/")
