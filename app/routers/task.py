@@ -86,6 +86,7 @@ def update_task(
 
     task.title = updated_task.title
     task.description = updated_task.description
+    task.status = updated_task.status
 
     db.commit()
 

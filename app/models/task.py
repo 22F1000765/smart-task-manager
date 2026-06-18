@@ -22,3 +22,8 @@ class Task(Base):
         String(500),
         nullable=True
     )
+
+    status: Mapped[str] = mapped_column(
+        String(50),
+        default="Pending"
+    )
