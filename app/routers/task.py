@@ -15,6 +15,8 @@ def get_tasks(
     status: str | None = None,
     search: str | None = None,
     sort: str | None = None,
+    page: int = 1,
+    limit: int = 10,
     db: Session = Depends(get_db)
 ):
     query = db.query(Task)
@@ -36,8 +38,9 @@ def get_tasks(
         query = query.order_by(
             Task.created_at
         )
+    offset = (page - 1)*limit
 
-    return query.all()
+    return query.offset(offset).limit(limit).all()
 
 @router.get(
     "/{task_id}",
