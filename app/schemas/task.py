@@ -4,6 +4,7 @@ from datetime import datetime
 class TaskCreate(BaseModel):
     title: str
     description: str  | None = None
+    owner_id: int
 
 class TaskUpdate(BaseModel):
     title: str
@@ -17,6 +18,7 @@ class TaskResponse(BaseModel):
     status: str
     created_at: datetime
     updated_at: datetime
+    owner_id: int | None = None
     
     
     model_config = {

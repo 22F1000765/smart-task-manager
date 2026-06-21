@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse
+from app.models.user import User
 
 from sqlalchemy.orm import Session
 
@@ -17,9 +18,15 @@ def get_tasks(
     sort: str | None = None,
     page: int = 1,
     limit: int = 10,
+    owner_id: int | None = None,
     db: Session = Depends(get_db)
 ):
     query = db.query(Task)
+
+    if owner_id:
+        query = query.filter(
+            Task.owner_id == owner_id
+        )
 
     if status:
         query = query.filter(Task.status == status)
@@ -68,6 +75,7 @@ def get_task(
     "/",
     response_model=TaskResponse
 )
+
 def create_task(
     task: TaskCreate,
     db: Session = Depends(get_db)
@@ -75,9 +83,19 @@ def create_task(
 
     new_task = Task(
         title=task.title,
-        description=task.description
+        description=task.description,
+        owner_id=task.owner_id
     )
 
+    user = db.query(User).filter(
+    User.id == task.owner_id
+        ).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+    )
     db.add(new_task)
 
     db.commit()
