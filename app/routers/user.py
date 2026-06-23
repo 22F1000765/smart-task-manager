@@ -5,6 +5,20 @@ from app.database import get_db
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse
 
+from app.security import hash_password
+
+from app.security import (
+    verify_password,
+    create_access_token
+)
+
+from app.schemas.user import (
+    UserCreate,
+    UserResponse,
+    UserLogin,
+    Token
+)
+
 router = APIRouter()
 
 @router.post(
@@ -29,8 +43,8 @@ def create_user(
     new_user = User(
         username=user.username,
         email=user.email,
-        hashed_password=user.password
-    )
+        hashed_password=hash_password(user.password)
+    )   
 
     db.add(new_user)
 
@@ -70,3 +84,42 @@ def get_user(
         )
 
     return user 
+
+@router.post(
+    "/login",
+    response_model=Token
+)
+def login(
+    user_data: UserLogin,
+    db: Session = Depends(get_db)
+):
+
+    user = db.query(User).filter(
+        User.email == user_data.email
+    ).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials"
+        )
+
+    if not verify_password(
+        user_data.password,
+        user.hashed_password
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials"
+        )
+
+    access_token = create_access_token(
+        data={
+            "sub": str(user.id)
+        }
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
