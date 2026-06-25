@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse
 from app.models.user import User
+from app.dependencies import get_current_user
 
 from sqlalchemy.orm import Session
 
@@ -19,9 +20,12 @@ def get_tasks(
     page: int = 1,
     limit: int = 10,
     owner_id: int | None = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    query = db.query(Task)
+    query = db.query(Task).filter(
+        Task.owner_id == current_user.id
+    )
 
     if owner_id:
         query = query.filter(
@@ -55,11 +59,13 @@ def get_tasks(
 )
 def get_task(
     task_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
     task = db.query(Task).filter(
-        Task.id == task_id
+        Task.id == task_id,
+        Task.owner_id == current_user.id
     ).first()
 
     if not task:
@@ -78,13 +84,15 @@ def get_task(
 
 def create_task(
     task: TaskCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    
 ):
 
     new_task = Task(
         title=task.title,
         description=task.description,
-        owner_id=task.owner_id
+        owner_id=current_user.id
     )
 
     user = db.query(User).filter(
@@ -111,11 +119,13 @@ def create_task(
 def update_task(
     task_id: int,
     updated_task: TaskUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
     task = db.query(Task).filter(
-        Task.id == task_id
+        Task.id == task_id,
+        Task.owner_id == current_user.id
     ).first()
 
     if not task:
@@ -137,11 +147,13 @@ def update_task(
 @router.delete("/{task_id}")
 def delete_task(
     task_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
     task = db.query(Task).filter(
-        Task.id == task_id
+        Task.id == task_id,
+        Task.owner_id == current_user.id
     ).first()
 
     if not task:
