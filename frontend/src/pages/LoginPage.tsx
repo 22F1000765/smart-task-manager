@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../services/authService";
+import { login as loginUser } from "../services/authService";
+
+import { useAuth } from "../context/AuthContext";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,9 +15,9 @@ function LoginPage() {
     e.preventDefault();
 
     try {
-      const data = await login(email, password);
+      const data = await loginUser(email, password);
 
-      localStorage.setItem("access_token", data.access_token);
+      login(data.access_token);
 
       alert("Login Successful!");
 
