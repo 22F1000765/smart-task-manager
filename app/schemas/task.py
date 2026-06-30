@@ -4,7 +4,7 @@ from datetime import datetime
 class TaskCreate(BaseModel):
     title: str
     description: str  | None = None
-    owner_id: int
+    
 
 class TaskUpdate(BaseModel):
     title: str
