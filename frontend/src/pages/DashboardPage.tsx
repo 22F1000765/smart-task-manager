@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 
-import { getTasks } from "../services/taskService";
+import { getTasks, createTask } from "../services/taskService";
 import type { Task } from "../types/Task";
 
 function DashboardPage() {
@@ -11,22 +11,41 @@ function DashboardPage() {
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
-  useEffect(() => {
   const fetchTasks = async () => {
-    try {
-      const data = await getTasks();
-      setTasks(data);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to load tasks");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const data = await getTasks();
+    setTasks(data);
+  } catch (error) {
+    console.error(error);
+    alert("Failed to load tasks");
+  } finally {
+    setLoading(false);
+  }
+};
 
+useEffect(() => {
   fetchTasks();
 }, []);
+const handleCreateTask = async (
+  e: React.FormEvent
+) => {
+  e.preventDefault();
+
+  try {
+    await createTask(title, description);
+
+    setTitle("");
+    setDescription("");
+
+    fetchTasks();
+  } catch (error) {
+    console.error(error);
+    alert("Failed to create task");
+  }
+};
 
   const handleLogout = () => {
     logout();
@@ -47,7 +66,37 @@ return (
     </button>
 
     <hr />
+    <h3>Create Task</h3>
 
+<form onSubmit={handleCreateTask}>
+  <div>
+    <input
+      type="text"
+      placeholder="Task Title"
+      value={title}
+      onChange={(e) => setTitle(e.target.value)}
+      required
+    />
+  </div>
+
+  <br />
+
+  <div>
+    <textarea
+      placeholder="Description"
+      value={description}
+      onChange={(e) => setDescription(e.target.value)}
+    />
+  </div>
+
+  <br />
+
+  <button type="submit">
+    Create Task
+  </button>
+</form>
+
+<hr />
     <h3>My Tasks</h3>
 
     {tasks.length === 0 ? (
