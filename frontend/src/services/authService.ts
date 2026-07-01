@@ -14,3 +14,17 @@ export const login = async (email: string, password: string) => {
 
   return response.data;
 };
+
+export const register = async (
+  username: string,
+  email: string,
+  password: string
+) => {
+  const response = await api.post("/users/", {
+    username,
+    email,
+    password,
+  });
+
+  return response.data;
+};

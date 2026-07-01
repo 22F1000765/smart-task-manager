@@ -4,6 +4,8 @@ import { login as loginUser } from "../services/authService";
 
 import { useAuth } from "../context/AuthContext";
 
+import { Link } from "react-router-dom";
+
 function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -64,6 +66,10 @@ function LoginPage() {
         <br />
 
         <button type="submit">Login</button>
+        <p>
+          Don't have an account?{" "}
+          <Link to="/register">Register</Link>
+        </p>
       </form>
     </div>
   );
