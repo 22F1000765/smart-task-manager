@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 
-import { getTasks, createTask } from "../services/taskService";
+import { getTasks, createTask, updateTask } from "../services/taskService";
 import type { Task } from "../types/Task";
 
 function DashboardPage() {
@@ -13,6 +13,9 @@ function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
+  const [status, setStatus] = useState("Pending");
 
   const fetchTasks = async () => {
   try {
@@ -35,10 +38,24 @@ const handleCreateTask = async (
   e.preventDefault();
 
   try {
-    await createTask(title, description);
+    if (editingTaskId) {
+  await updateTask(
+    editingTaskId,
+    title,
+    description,
+    status
+  );
+} else {
+  await createTask(
+    title,
+    description
+  );
+}
 
     setTitle("");
     setDescription("");
+    setStatus("Pending");
+    setEditingTaskId(null);
 
     fetchTasks();
   } catch (error) {
@@ -66,7 +83,10 @@ return (
     </button>
 
     <hr />
-    <h3>Create Task</h3>
+    <h3>
+      {editingTaskId ? "Edit Task" : "Create Task"}
+    </h3>
+    
 
 <form onSubmit={handleCreateTask}>
   <div>
@@ -91,13 +111,30 @@ return (
 
   <br />
 
+<div>
+  <label>Status</label>
+  <br />
+
+  <select
+    value={status}
+    onChange={(e) => setStatus(e.target.value)}
+  >
+    <option value="Pending">Pending</option>
+    <option value="In progress">In progress</option>
+    <option value="Completed">Completed</option>
+  </select>
+</div>
+
+  <br />
+
   <button type="submit">
-    Create Task
+    {editingTaskId ? "Update Task" : "Create Task"}
   </button>
 </form>
 
 <hr />
     <h3>My Tasks</h3>
+
 
     {tasks.length === 0 ? (
       <p>No tasks found.</p>
@@ -108,7 +145,24 @@ return (
             <strong>{task.title}</strong>
             <br />
             Status: {task.status}
-          </li>
+            <br />
+            <br />
+
+            <button
+  type="button"
+  onClick={() => {
+    console.log("Edit clicked");
+    console.log(task);
+
+    setEditingTaskId(task.id);
+    setTitle(task.title);
+    setDescription(task.description ?? "");
+    setStatus(task.status);
+  }}
+>
+  Edit
+</button>
+        </li>
         ))}
       </ul>
     )}

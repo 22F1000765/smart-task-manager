@@ -15,3 +15,17 @@ export const createTask = async (
 
   return response.data;
 };
+export const updateTask = async (
+  id: number,
+  title: string,
+  description: string,
+  status: string
+) => {
+  const response = await api.put(`/tasks/${id}`, {
+    title,
+    description,
+    status,
+  });
+
+  return response.data;
+};
