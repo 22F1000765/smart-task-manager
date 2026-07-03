@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 
-import { getTasks, createTask, updateTask } from "../services/taskService";
+import { getTasks, createTask, updateTask, deleteTask } from "../services/taskService";
 import type { Task } from "../types/Task";
 
 function DashboardPage() {
@@ -61,6 +61,22 @@ const handleCreateTask = async (
   } catch (error) {
     console.error(error);
     alert("Failed to create task");
+  }
+};
+const handleDeleteTask = async (taskId: number) => {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this task?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await deleteTask(taskId);
+
+    fetchTasks();
+  } catch (error) {
+    console.error(error);
+    alert("Failed to delete task");
   }
 };
 
@@ -161,6 +177,13 @@ return (
   }}
 >
   Edit
+</button>
+
+<button
+  type="button"
+  onClick={() => handleDeleteTask(task.id)}
+>
+  Delete
 </button>
         </li>
         ))}
