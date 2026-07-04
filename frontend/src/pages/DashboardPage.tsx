@@ -146,6 +146,22 @@ return (
   <button type="submit">
     {editingTaskId ? "Update Task" : "Create Task"}
   </button>
+
+  <br />
+
+  {editingTaskId && (
+  <button
+    type="button"
+    onClick={() => {
+      setEditingTaskId(null);
+      setTitle("");
+      setDescription("");
+      setStatus("Pending");
+    }}
+  >
+    Cancel
+  </button>
+)}
 </form>
 
 <hr />
