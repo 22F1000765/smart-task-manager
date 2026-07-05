@@ -17,6 +17,8 @@ function DashboardPage() {
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
   const [status, setStatus] = useState("Pending");
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   const fetchTasks = async () => {
   try {
     const data = await getTasks();
@@ -84,6 +86,9 @@ const handleDeleteTask = async (taskId: number) => {
     logout();
     navigate("/login");
   };
+  const filteredTasks = tasks.filter((task) =>
+  task.title.toLowerCase().includes(searchTerm.toLowerCase())
+);
 
   if (loading) {
   return <h2>Loading tasks...</h2>;
@@ -165,6 +170,16 @@ return (
 </form>
 
 <hr />
+    <div>
+  <input
+    type="text"
+    placeholder="Search by title..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+</div>
+
+<br />
     <h3>My Tasks</h3>
 
 
@@ -172,7 +187,7 @@ return (
       <p>No tasks found.</p>
     ) : (
       <ul>
-        {tasks.map((task) => (
+        {filteredTasks.map((task) => (
           <li key={task.id}>
             <strong>{task.title}</strong>
             <br />
