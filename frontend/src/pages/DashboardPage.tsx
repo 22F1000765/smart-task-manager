@@ -19,13 +19,15 @@ function DashboardPage() {
 
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [message, setMessage] = useState("");
+
   const fetchTasks = async () => {
   try {
     const data = await getTasks();
     setTasks(data);
   } catch (error) {
     console.error(error);
-    alert("Failed to load tasks");
+    setMessage("Failed to load tasks");
   } finally {
     setLoading(false);
   }
@@ -40,6 +42,7 @@ const handleCreateTask = async (
   e.preventDefault();
 
   try {
+    const isEditing = editingTaskId !== null;
     if (editingTaskId) {
   await updateTask(
     editingTaskId,
@@ -60,9 +63,15 @@ const handleCreateTask = async (
     setEditingTaskId(null);
 
     fetchTasks();
+    setMessage(
+  isEditing
+    ? "✅ Task updated successfully."
+    : "✅ Task created successfully."
+);
+
   } catch (error) {
     console.error(error);
-    alert("Failed to create task");
+    setMessage("Failed to create task");
   }
 };
 const handleDeleteTask = async (taskId: number) => {
@@ -76,9 +85,10 @@ const handleDeleteTask = async (taskId: number) => {
     await deleteTask(taskId);
 
     fetchTasks();
+    setMessage("✅ Task deleted successfully.");
   } catch (error) {
     console.error(error);
-    alert("Failed to delete task");
+    setMessage("Failed to delete task");
   }
 };
 
@@ -98,6 +108,9 @@ const handleDeleteTask = async (taskId: number) => {
 return (
   <div style={{ padding: "40px" }}>
     <h2>Dashboard</h2>
+    {message && (
+  <p>{message}</p>
+)}
 
     <button onClick={handleLogout}>
       Logout
