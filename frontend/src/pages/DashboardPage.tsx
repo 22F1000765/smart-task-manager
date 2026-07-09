@@ -106,52 +106,82 @@ const handleDeleteTask = async (taskId: number) => {
 
   
 return (
-  <div style={{ padding: "40px" }}>
-    <h2>Dashboard</h2>
-    {message && (
-  <p>{message}</p>
+  <div className="min-h-screen bg-slate-100">
+    <div className="mx-auto max-w-5xl px-6 py-8">
+    <div className="mb-8 flex items-center justify-between">
+  <div>
+    <h1 className="text-3xl font-bold text-slate-800">
+      Smart Task Manager
+    </h1>
+
+    <p className="mt-1 text-slate-500">
+      Manage your tasks efficiently
+    </p>
+  </div>
+
+  <button
+    onClick={handleLogout}
+    className="rounded-lg bg-red-500 px-5 py-2 text-white font-medium transition hover:bg-red-600"
+  >
+    Logout
+  </button>
+</div>
+</div>
+
+
+{message && (
+  <div className="mb-6 rounded-lg bg-green-100 border border-green-300 p-3 text-green-700">
+    {message}
+  </div>
 )}
+    <div className="mb-10 rounded-xl bg-white p-6 shadow-md">
+  <h2 className="mb-6 text-2xl font-semibold text-slate-800">
+    {editingTaskId ? "Edit Task" : "Create Task"}
+  </h2>
 
-    <button onClick={handleLogout}>
-      Logout
-    </button>
-
-    <hr />
-    <h3>
-      {editingTaskId ? "Edit Task" : "Create Task"}
-    </h3>
-    
-
-<form onSubmit={handleCreateTask}>
+  <form onSubmit={handleCreateTask} className="space-y-5">
   <div>
-    <input
-      type="text"
-      placeholder="Task Title"
-      value={title}
-      onChange={(e) => setTitle(e.target.value)}
-      required
-    />
-  </div>
+  <label className="mb-2 block text-sm font-medium text-slate-700">
+    Title
+  </label>
 
-  <br />
+  <input
+    type="text"
+    placeholder="Enter task title"
+    value={title}
+    onChange={(e) => setTitle(e.target.value)}
+    required
+    className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+</div>
+
+  
 
   <div>
-    <textarea
-      placeholder="Description"
-      value={description}
-      onChange={(e) => setDescription(e.target.value)}
-    />
-  </div>
+  <label className="mb-2 block text-sm font-medium text-slate-700">
+    Description
+  </label>
 
-  <br />
+  <textarea
+    placeholder="Enter task description"
+    value={description}
+    onChange={(e) => setDescription(e.target.value)}
+    rows={4}
+    className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+</div>
+
+  
 
 <div>
-  <label>Status</label>
-  <br />
+  <label className="mb-2 block text-sm font-medium text-slate-700">
+    Status
+  </label>
 
   <select
     value={status}
     onChange={(e) => setStatus(e.target.value)}
+    className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
   >
     <option value="Pending">Pending</option>
     <option value="In progress">In progress</option>
@@ -159,26 +189,30 @@ return (
   </select>
 </div>
 
-  <br />
+  
 
-  <button type="submit">
-    {editingTaskId ? "Update Task" : "Create Task"}
-  </button>
+  <button
+  type="submit"
+  className="rounded-lg bg-blue-600 px-6 py-2.5 font-medium text-white transition hover:bg-blue-700"
+>
+  {editingTaskId ? "Update Task" : "Create Task"}
+</button>
 
-  <br />
+  
 
   {editingTaskId && (
   <button
-    type="button"
-    onClick={() => {
-      setEditingTaskId(null);
-      setTitle("");
-      setDescription("");
-      setStatus("Pending");
-    }}
-  >
-    Cancel
-  </button>
+  type="button"
+  onClick={() => {
+    setEditingTaskId(null);
+    setTitle("");
+    setDescription("");
+    setStatus("Pending");
+  }}
+  className="ml-3 rounded-lg border border-slate-300 px-6 py-2.5 text-slate-700 transition hover:bg-slate-100"
+>
+  Cancel
+</button>
 )}
 </form>
 
@@ -234,6 +268,8 @@ return (
       </ul>
     )}
   </div>
+  </div>
+
 );
 }
 export default DashboardPage;
