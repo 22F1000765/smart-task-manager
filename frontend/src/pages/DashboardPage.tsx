@@ -216,56 +216,77 @@ return (
 )}
 </form>
 
-<hr />
-    <div>
+<div className="mb-8">
+  <label className="mb-2 block text-sm font-medium text-slate-700">
+    Search Tasks
+  </label>
+
   <input
     type="text"
     placeholder="Search by title..."
     value={searchTerm}
     onChange={(e) => setSearchTerm(e.target.value)}
+    className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
   />
 </div>
 
-<br />
-    <h3>My Tasks</h3>
+<h2 className="mb-6 text-2xl font-semibold text-slate-800">
+  My Tasks
+</h2>
 
 
-    {tasks.length === 0 ? (
-      <p>No tasks found.</p>
-    ) : (
-      <ul>
+    {filteredTasks.length === 0 ? (
+  <div className="rounded-xl border-2 border-dashed border-slate-300 bg-white p-10 text-center">
+    <h3 className="text-lg font-semibold text-slate-700">
+      No tasks found
+    </h3>
+
+    <p className="mt-2 text-slate-500">
+      Create a new task to get started.
+    </p>
+  </div>
+) : (
+    <div className="grid gap-5">
         {filteredTasks.map((task) => (
-          <li key={task.id}>
+          <div
+  key={task.id}
+  className="rounded-xl bg-white p-6 shadow-md"
+>
             <strong>{task.title}</strong>
             <br />
             Status: {task.status}
+
             <br />
+            Description: {task.description || "No description provided."}
+
             <br />
 
-            <button
-  type="button"
-  onClick={() => {
-    console.log("Edit clicked");
-    console.log(task);
+        <div className="mt-6 flex gap-3">
+  <button
+    type="button"
+    onClick={() => {
+      setEditingTaskId(task.id);
+      setTitle(task.title);
+      setDescription(task.description ?? "");
+      setStatus(task.status);
+    }}
+    className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700"
+  >
+    Edit
+  </button>
 
-    setEditingTaskId(task.id);
-    setTitle(task.title);
-    setDescription(task.description ?? "");
-    setStatus(task.status);
-  }}
->
-  Edit
-</button>
-
-<button
-  type="button"
-  onClick={() => handleDeleteTask(task.id)}
->
-  Delete
-</button>
-        </li>
+  <button
+    type="button"
+    onClick={() => handleDeleteTask(task.id)}
+    className="rounded-lg bg-red-500 px-4 py-2 font-medium text-white transition hover:bg-red-600"
+  >
+    Delete
+  </button>
+</div>    
+  
+        </div>
         ))}
-      </ul>
+      </div>
     )}
   </div>
   </div>
