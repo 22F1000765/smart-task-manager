@@ -246,22 +246,36 @@ return (
     </p>
   </div>
 ) : (
-    <div className="grid gap-5">
+    <div className="grid gap-5 md:grid-cols-2">
         {filteredTasks.map((task) => (
           <div
   key={task.id}
   className="rounded-xl bg-white p-6 shadow-md"
 >
-            <strong>{task.title}</strong>
-            <br />
-            Status: {task.status}
+            <h3 className="text-xl font-semibold text-slate-800">
+              {task.title}
+            </h3>
+           <p className="mt-2 text-slate-600">
+              {task.description || "No description provided."}
+            </p>
+            
+            <div className="mt-4">
+              <span
+                className={`rounded-full px-3 py-1 text-sm font-medium ${
+                  task.status === "Completed"
+                  ? "bg-green-100 text-green-700"
+                  : task.status === "In progress"
+                  ? "bg-blue-100 text-blue-700"
+                  : "bg-yellow-100 text-yellow-700"
+                }`}
+              >
+              {task.status}
+            </span>
+            </div>
 
-            <br />
-            Description: {task.description || "No description provided."}
+            
 
-            <br />
-
-        <div className="mt-6 flex gap-3">
+        <div className="mt-6 flex justify-end gap-3">
   <button
     type="button"
     onClick={() => {
