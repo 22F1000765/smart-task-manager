@@ -13,6 +13,8 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const[message, setMessage] = useState("");
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -21,7 +23,8 @@ function LoginPage() {
 
       login(data.access_token);
 
-      alert("Login Successful!");
+      
+      setMessage("✅ Login successful! Redirecting...");
 
       navigate("/dashboard");
     } catch (error: any) {
@@ -29,7 +32,9 @@ function LoginPage() {
         console.log(error.response?.data);
         console.log(error.response?.status);
 
-        alert(JSON.stringify(error.response?.data));
+        setMessage(
+  error.response?.data?.detail || "Login failed."
+);
       
     }
   };
@@ -40,6 +45,11 @@ function LoginPage() {
       <h1 className="text-3xl font-bold text-center text-slate-800">
         Smart Task Manager
       </h1>
+      {message && (
+  <div className="mt-4 rounded-lg bg-red-100 p-3 text-red-700">
+    {message}
+  </div>
+)}
 
       <p className="mt-2 text-center text-slate-500">
         Sign in to manage your tasks
