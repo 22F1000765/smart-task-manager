@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { getTasks, createTask, updateTask, deleteTask } from "../services/taskService";
 import type { Task } from "../types/Task";
 
+import { LogOut,Pencil,Trash2,Plus,Search } from "lucide-react"
+
+
 function DashboardPage() {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -118,13 +121,14 @@ return (
       Manage your tasks efficiently
     </p>
   </div>
-
   <button
-    onClick={handleLogout}
-    className="rounded-lg bg-red-500 px-5 py-2 text-white font-medium transition hover:bg-red-600"
-  >
-    Logout
-  </button>
+  onClick={handleLogout}
+  className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-white transition hover:bg-red-600"
+>
+  <LogOut size={18} />
+  Logout
+</button>
+  
 </div>
 </div>
 
@@ -189,16 +193,14 @@ return (
   </select>
 </div>
 
-  
 
   <button
   type="submit"
-  className="rounded-lg bg-blue-600 px-6 py-2.5 font-medium text-white transition hover:bg-blue-700"
+  className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 font-medium text-white transition hover:bg-blue-700"
 >
+  <Plus size={18} />
   {editingTaskId ? "Update Task" : "Create Task"}
 </button>
-
-  
 
   {editingTaskId && (
   <button
@@ -217,9 +219,12 @@ return (
 </form>
 
 <div className="mb-8">
-  <label className="mb-2 block text-sm font-medium text-slate-700">
+  <div className="mb-2 flex items-center gap-2">
+  <Search size={18} className="text-slate-600" />
+  <label className="text-sm font-medium text-slate-700">
     Search Tasks
   </label>
+</div>
 
   <input
     type="text"
@@ -286,6 +291,7 @@ return (
     }}
     className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700"
   >
+    <Pencil size={16} />
     Edit
   </button>
 
@@ -294,6 +300,7 @@ return (
     onClick={() => handleDeleteTask(task.id)}
     className="rounded-lg bg-red-500 px-4 py-2 font-medium text-white transition hover:bg-red-600"
   >
+    < Trash2 size={16} />
     Delete
   </button>
 </div>    
