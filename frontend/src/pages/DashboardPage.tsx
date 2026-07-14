@@ -104,7 +104,21 @@ const handleDeleteTask = async (taskId: number) => {
 );
 
   if (loading) {
-  return <h2>Loading tasks...</h2>;
+   return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-100">
+      <div className="rounded-xl bg-white px-8 py-6 shadow-md">
+        <h2 className="text-xl font-semibold text-slate-700">
+          <div className="mt-4 flex justify-center">
+            Loading your dashboard...
+  <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent">
+          
+  </div>
+</div>
+          
+        </h2>
+      </div>
+    </div>
+  );
 }
 
   
