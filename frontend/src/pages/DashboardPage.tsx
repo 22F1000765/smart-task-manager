@@ -7,6 +7,8 @@ import type { Task } from "../types/Task";
 
 import { LogOut,Pencil,Trash2,Plus,Search } from "lucide-react"
 
+import { toast } from "sonner";
+
 
 function DashboardPage() {
   const { logout } = useAuth();
@@ -22,7 +24,7 @@ function DashboardPage() {
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [message, setMessage] = useState("");
+  
 
   const fetchTasks = async () => {
   try {
@@ -30,7 +32,7 @@ function DashboardPage() {
     setTasks(data);
   } catch (error) {
     console.error(error);
-    setMessage("Failed to load tasks");
+    toast.error("Failed to load tasks");
   } finally {
     setLoading(false);
   }
@@ -66,16 +68,20 @@ const handleCreateTask = async (
     setEditingTaskId(null);
 
     fetchTasks();
-    setMessage(
+    toast.success(
   isEditing
-    ? "✅ Task updated successfully."
-    : "✅ Task created successfully."
+    ? "Task updated successfully."
+    : "Task created successfully."
 );
 
   } catch (error) {
     console.error(error);
-    setMessage("Failed to create task");
-  }
+    toast.error(
+      editingTaskId
+      ? "Failed to update task."
+      : "Failed to create task."
+    );
+    }
 };
 const handleDeleteTask = async (taskId: number) => {
   const confirmed = window.confirm(
@@ -88,10 +94,10 @@ const handleDeleteTask = async (taskId: number) => {
     await deleteTask(taskId);
 
     fetchTasks();
-    setMessage("✅ Task deleted successfully.");
+    toast.success("Task deleted successfully.");
   } catch (error) {
     console.error(error);
-    setMessage("Failed to delete task");
+    toast.error("Failed to delete task");
   }
 };
 
@@ -107,15 +113,15 @@ const handleDeleteTask = async (taskId: number) => {
    return (
     <div className="flex min-h-screen items-center justify-center bg-slate-100">
       <div className="rounded-xl bg-white px-8 py-6 shadow-md">
-        <h2 className="text-xl font-semibold text-slate-700">
-          <div className="mt-4 flex justify-center">
+        <div className="rounded-xl bg-white px-8 py-6 shadow-md">
+          <h2 className="text-xl font-semibold text-slate-700 text-center">
             Loading your dashboard...
-  <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent">
-          
+          </h2>
+
+        <div className="mt-4 flex justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
   </div>
 </div>
-          
-        </h2>
       </div>
     </div>
   );
@@ -146,12 +152,6 @@ return (
 </div>
 </div>
 
-
-{message && (
-  <div className="mb-6 rounded-lg bg-green-100 border border-green-300 p-3 text-green-700">
-    {message}
-  </div>
-)}
     <div className="mb-10 rounded-xl bg-white p-6 shadow-md">
   <h2 className="mb-6 text-2xl font-semibold text-slate-800">
     {editingTaskId ? "Edit Task" : "Create Task"}
@@ -303,7 +303,7 @@ return (
       setDescription(task.description ?? "");
       setStatus(task.status);
     }}
-    className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700"
+    className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700"
   >
     <Pencil size={16} />
     Edit
@@ -312,7 +312,7 @@ return (
   <button
     type="button"
     onClick={() => handleDeleteTask(task.id)}
-    className="rounded-lg bg-red-500 px-4 py-2 font-medium text-white transition hover:bg-red-600"
+    className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 font-medium text-white transition hover:bg-red-600"
   >
     < Trash2 size={16} />
     Delete

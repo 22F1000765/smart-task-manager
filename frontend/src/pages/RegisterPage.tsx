@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { register } from "../services/authService";
 
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [message, setMessage] = useState("");
+  
 
 
   const handleRegister = async (
@@ -28,13 +29,13 @@ function RegisterPage() {
     );
 
     
-    setMessage("✅ Registration successful!");
+    toast.success("✅ Registration successful!");
 
     navigate("/login");
   } catch (error: any) {
     console.log(error.response);
 
-    setMessage(
+    toast.error(
   error.response?.data?.detail ||
   "Registration failed."
 );
@@ -47,11 +48,7 @@ function RegisterPage() {
       <h1 className="text-3xl font-bold text-center text-slate-800">
         Create Account
       </h1>
-      {message && (
-  <div className="mt-4 rounded-lg bg-red-100 p-3 text-red-700">
-    {message}
-    </div>
-)}
+      
       <p className="mt-2 text-center text-slate-500">
         Register to start managing your tasks
       </p>

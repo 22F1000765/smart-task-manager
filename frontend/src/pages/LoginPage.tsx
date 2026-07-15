@@ -5,6 +5,7 @@ import { login as loginUser } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -12,8 +13,6 @@ function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const[message, setMessage] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,8 +22,7 @@ function LoginPage() {
 
       login(data.access_token);
 
-      
-      setMessage("✅ Login successful! Redirecting...");
+      toast.success("Login successful!");
 
       navigate("/dashboard");
     } catch (error: any) {
@@ -32,7 +30,7 @@ function LoginPage() {
         console.log(error.response?.data);
         console.log(error.response?.status);
 
-        setMessage(
+        toast.error(
   error.response?.data?.detail || "Login failed."
 );
       
@@ -45,11 +43,6 @@ function LoginPage() {
       <h1 className="text-3xl font-bold text-center text-slate-800">
         Smart Task Manager
       </h1>
-      {message && (
-  <div className="mt-4 rounded-lg bg-red-100 p-3 text-red-700">
-    {message}
-  </div>
-)}
 
       <p className="mt-2 text-center text-slate-500">
         Sign in to manage your tasks
