@@ -24,6 +24,10 @@ function DashboardPage() {
 
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [errors, setErrors] = useState({
+    title: "",
+  });
+
   
 
   const fetchTasks = async () => {
@@ -41,23 +45,47 @@ function DashboardPage() {
 useEffect(() => {
   fetchTasks();
 }, []);
+
+const validateTaskForm = () => {
+  const newErrors = {
+    title: "",
+  };
+
+  let isValid = true;
+
+  if (!title.trim()) {
+    newErrors.title = "Task title is required.";
+    isValid = false;
+  } else if (title.trim().length > 100) {
+    newErrors.title = "Title must be less than 100 characters.";
+    isValid = false;
+  }
+
+  setErrors(newErrors);
+
+  return isValid;
+};
+
 const handleCreateTask = async (
   e: React.FormEvent
 ) => {
   e.preventDefault();
+  if (!validateTaskForm()) {
+    return;
+  }
 
   try {
     const isEditing = editingTaskId !== null;
     if (editingTaskId) {
   await updateTask(
     editingTaskId,
-    title,
+    title.trim(),
     description,
     status
   );
 } else {
   await createTask(
-    title,
+    title.trim(),
     description
   );
 }
@@ -164,13 +192,34 @@ return (
   </label>
 
   <input
+    
     type="text"
     placeholder="Enter task title"
     value={title}
-    onChange={(e) => setTitle(e.target.value)}
-    required
-    className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    
+    onChange={(e) => {
+      setTitle(e.target.value);
+
+    if (errors.title) {
+      setErrors({
+        ...errors,
+        title: "",
+      });
+    }
+    
+}}
+    
+    className={`w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 ${
+  errors.title
+    ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+    : "border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+}`}
   />
+  {errors.title && (
+  <p className="mt-1 text-sm text-red-600">
+    {errors.title}
+  </p>
+)}
 </div>
 
   

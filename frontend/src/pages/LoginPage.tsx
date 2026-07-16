@@ -14,11 +14,40 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+  const validateLoginForm = () => {
+  const newErrors = {
+    email: "",
+    password: "",
+  };
+
+  let isValid = true;
+
+  if (!email.trim()) {
+    newErrors.email = "Email is required.";
+    isValid = false;
+  }
+
+  if (!password) {
+    newErrors.password = "Password is required.";
+    isValid = false;
+  }
+
+  setErrors(newErrors);
+  return isValid;
+};
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateLoginForm()) {
+      return;
+  }
 
     try {
-      const data = await loginUser(email, password);
+      const data = await loginUser(email.trim(), password);
 
       login(data.access_token);
 
@@ -57,10 +86,29 @@ function LoginPage() {
           <input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            onChange={(e) => {
+              setEmail(e.target.value);
+
+              if (errors.email) {
+                setErrors({
+                  ...errors,
+                  email: "",
+                });
+              }
+}}
+            
+            className={`w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 ${
+              errors.email
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                : "border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+            }`}
+
           />
+          {errors.email && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.email}
+            </p>
+          )}
         </div>
 
         <div>
@@ -71,10 +119,28 @@ function LoginPage() {
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            onChange={(e) => {
+              setPassword(e.target.value);
+
+                if (errors.password) {
+                  setErrors({
+                    ...errors,
+                    password: "",
+                  });
+                }
+}}
+            
+            className={`w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 ${
+              errors.password
+                  ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                  : "border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+            }`}
           />
+          {errors.password && (
+            <p className="mt-1 text-sm text-red-600">
+                {errors.password}
+            </p>
+          )}
         </div>
 
         <button

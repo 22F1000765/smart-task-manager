@@ -13,18 +13,60 @@ function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  
+  const [errors, setErrors] = useState({
+  username: "",
+  email: "",
+  password: "",
+  });
 
+  const validateRegisterForm = () => {
+  const newErrors = {
+    username: "",
+    email: "",
+    password: "",
+  };
 
+  let isValid = true;
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!username.trim()) {
+    newErrors.username = "Username is required.";
+    isValid = false;
+  }
+
+  if (!email.trim()) {
+    newErrors.email = "Email is required.";
+    isValid = false;
+  } else if (!emailRegex.test(email.trim())) {
+    newErrors.email = "Please enter a valid email address.";
+    isValid = false;
+  }
+
+  if (!password) {
+    newErrors.password = "Password is required.";
+    isValid = false;
+  } else if (password.length < 8) {
+    newErrors.password = "Password must be at least 8 characters.";
+    isValid = false;
+  }
+
+  setErrors(newErrors);
+
+  return isValid;
+};
   const handleRegister = async (
   e: React.FormEvent
 ) => {
   e.preventDefault();
+  if (!validateRegisterForm()) {
+    return;
+  }
 
   try {
     await register(
-      username,
-      email,
+      username.trim(),
+      email.trim(),
       password
     );
 
@@ -62,10 +104,28 @@ function RegisterPage() {
           <input
             type="text"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-            className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            onChange={(e) => {
+              setUsername(e.target.value);
+
+              if (errors.username) {
+                setErrors({
+                  ...errors,
+                  username: "",
+                });
+              }
+}}
+            
+            className={`w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 ${
+              errors.username
+              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+              : "border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+              }`}
           />
+            {errors.username && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.username}
+              </p>
+            )}
         </div>
 
         <div>
@@ -76,10 +136,29 @@ function RegisterPage() {
           <input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            onChange={(e) => {
+              setEmail(e.target.value);
+
+              if (errors.email) {
+                setErrors({
+                  ...errors,
+                  email: "",
+                });
+              }
+}}          
+            className={`w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 ${
+              errors.email
+              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+              : "border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+              }`}
+            
+            
           />
+          {errors.email && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.email}
+            </p>
+          )}
         </div>
 
         <div>
@@ -90,10 +169,28 @@ function RegisterPage() {
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            onChange={(e) => {
+              setPassword(e.target.value);
+
+              if (errors.password) {
+                setErrors({
+                  ...errors,
+                  password: "",
+                });
+              }
+}}
+          className={`w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 ${
+              errors.email
+              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+              : "border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+              }`}
+             
           />
+          {errors.password && (
+          <p className="mt-1 text-sm text-red-600">
+              {errors.password}
+          </p>
+          )}
         </div>
 
         <button
