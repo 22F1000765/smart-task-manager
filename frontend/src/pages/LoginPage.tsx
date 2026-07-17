@@ -18,6 +18,9 @@ function LoginPage() {
     email: "",
     password: "",
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const validateLoginForm = () => {
   const newErrors = {
     email: "",
@@ -42,11 +45,13 @@ function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     if (!validateLoginForm()) {
       return;
   }
 
     try {
+      setIsSubmitting(true);
       const data = await loginUser(email.trim(), password);
 
       login(data.access_token);
@@ -63,6 +68,8 @@ function LoginPage() {
   error.response?.data?.detail || "Login failed."
 );
       
+    }  finally {
+          setIsSubmitting(false);
     }
   };
 
@@ -145,9 +152,10 @@ function LoginPage() {
 
         <button
           type="submit"
-          className="w-full rounded-lg bg-blue-600 py-2.5 text-white font-semibold transition hover:bg-blue-700"
+          disabled={isSubmitting}
+          className="w-full rounded-lg bg-blue-600 py-2.5 text-white font-semibold transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Login
+          {isSubmitting ? "Logging in..." : "Login"}
         </button>
 
         <p className="text-center text-sm text-slate-600">

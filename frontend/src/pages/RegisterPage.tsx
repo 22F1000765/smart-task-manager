@@ -19,6 +19,8 @@ function RegisterPage() {
   password: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const validateRegisterForm = () => {
   const newErrors = {
     username: "",
@@ -59,11 +61,13 @@ function RegisterPage() {
   e: React.FormEvent
 ) => {
   e.preventDefault();
+  if (isSubmitting) return;
   if (!validateRegisterForm()) {
     return;
   }
 
   try {
+    setIsSubmitting(true);
     await register(
       username.trim(),
       email.trim(),
@@ -81,6 +85,8 @@ function RegisterPage() {
   error.response?.data?.detail ||
   "Registration failed."
 );
+  } finally {
+  setIsSubmitting(false);
   }
 };
 
@@ -195,9 +201,10 @@ function RegisterPage() {
 
         <button
           type="submit"
-          className="w-full rounded-lg bg-blue-600 py-2.5 text-white font-semibold transition hover:bg-blue-700"
+          disabled={isSubmitting}
+          className="w-full rounded-lg bg-blue-600 py-2.5 text-white font-semibold transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Register
+          {isSubmitting ? "Registering..." : "Register"}
         </button>
 
         <p className="text-center text-sm text-slate-600">

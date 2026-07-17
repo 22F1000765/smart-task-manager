@@ -27,11 +27,13 @@ function DashboardPage() {
   const [errors, setErrors] = useState({
     title: "",
   });
-
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
 
   const fetchTasks = async () => {
   try {
+
     const data = await getTasks();
     setTasks(data);
   } catch (error) {
@@ -70,10 +72,11 @@ const handleCreateTask = async (
   e: React.FormEvent
 ) => {
   e.preventDefault();
+  if (isSubmitting) return;
   if (!validateTaskForm()) {
     return;
   }
-
+  setIsSubmitting(true);
   try {
     const isEditing = editingTaskId !== null;
     if (editingTaskId) {
@@ -109,6 +112,8 @@ const handleCreateTask = async (
       ? "Failed to update task."
       : "Failed to create task."
     );
+    }  finally {
+          setIsSubmitting(false);
     }
 };
 const handleDeleteTask = async (taskId: number) => {
@@ -259,23 +264,28 @@ return (
 
   <button
   type="submit"
-  className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 font-medium text-white transition hover:bg-blue-700"
+  disabled={isSubmitting}
+  className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
 >
   <Plus size={18} />
-  {editingTaskId ? "Update Task" : "Create Task"}
+  {editingTaskId
+  ? (isSubmitting ? "Updating..." : "Update Task")
+  : (isSubmitting ? "Creating..." : "Create Task")}
 </button>
 
   {editingTaskId && (
   <button
   type="button"
+  disabled={isSubmitting}
   onClick={() => {
     setEditingTaskId(null);
     setTitle("");
     setDescription("");
     setStatus("Pending");
   }}
-  className="ml-3 rounded-lg border border-slate-300 px-6 py-2.5 text-slate-700 transition hover:bg-slate-100"
->
+  
+  className="ml-3 rounded-lg border border-slate-300 px-6 py-2.5 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+  >
   Cancel
 </button>
 )}
