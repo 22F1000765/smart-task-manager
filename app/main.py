@@ -13,7 +13,9 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Smart Task Manager API",
-    version="1.0.0"
+    version="1.0.0",
+    description="REST API for managing tasks with JWT authentication",
+    
 )
 
 # Enable CORS
@@ -44,5 +46,7 @@ app.include_router(user_router,
 @app.get("/")
 def home():
     return {
-        "message": "Smart Task Manager API Running"
+        "message": "Smart Task Manager API Running",
+        "status": "healthy",
+        "docs": "/docs"
     }
