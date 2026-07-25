@@ -14,7 +14,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="Smart Task Manager API",
     version="1.0.0",
-    description="REST API for managing tasks with JWT authentication",
+    description="A production-ready task management REST API built with FastAPI, PostgreSQL, SQLAlchemy, and JWT Authentication.",
     
 )
 
@@ -48,5 +48,6 @@ def home():
     return {
         "message": "Smart Task Manager API Running",
         "status": "healthy",
-        "docs": "/docs"
+        "docs": "/docs",
+        "version": "1.0.0"
     }
