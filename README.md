@@ -159,3 +159,28 @@ Swagger UI can be used to test all endpoints, including authentication and task 
 
 - GitHub: https://github.com/22F1000765
 - LinkedIn: https://linkedin.com/in/n-m-pranitha-36a590226
+
+## Future Enhancements
+
+- Task priorities
+- Due dates
+- Email reminders
+- Docker deployment
+- Automated testing
+- CI/CD pipeline
+
+---
+
+## Learning Outcomes
+
+This project provided practical experience with:
+
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
+- React
+- TypeScript
+- Tailwind CSS
+- JWT Authentication
+- REST API Design
+- Production Deployment using Render and Vercel
